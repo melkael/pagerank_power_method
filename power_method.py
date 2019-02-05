@@ -1,4 +1,5 @@
 import numpy as np
+from collections import Counter
 from collections import defaultdict
 
 
@@ -80,33 +81,29 @@ def generateLookup(graphe):
     return pr_lookup
 
 
-def pageRank(pr_lookup):
+def pageRank(pr_lookup, num_links):
     diff = 1
     pr_prec = {el: 1 / len(pr_lookup.keys()) for el in pr_lookup.keys()}
     pr = pr_prec.copy()
     a = 0
     while diff >= pow(10, -12):
-        pr_prec = pr.copy()
         for elem in pr:
             elem_list = pr_lookup[elem]
             pr[elem] = 0
             for predecessor in elem_list:
-                pr[elem] += predecessor[0] * pr_prec[predecessor[1]] / len(elem_list)
-
+                pr[elem] += pr_prec[predecessor[1]] / num_links[predecessor[1]]
         diff = max([i - j for i, j in zip(pr_prec.values(), pr.values())])
+        pr_prec = pr.copy()
         a += 1
-    '''
-        print("pr : ", a, "###", pr)
-        print("pr_prec : ", a, "###", pr_prec)
-        print("diff : ", a, "###", diff)
-    '''
-    print(a)
+    print("number of iterations : ", a)
     return pr
 
 
-graphe = openGraph("web3.txt")
+graphe = openGraph("web1.txt")
 lookup = generateLookup(graphe)
-print(pageRank(lookup))
+num_links = Counter(sparseToArray(graphe)[2])
+num_links = {int(k): v for k, v in num_links.items()}
+print(pageRank(lookup, num_links))
 
 #POIDS
 #VERS X
