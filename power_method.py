@@ -6,7 +6,6 @@ import operator
 
 def checkPageNumber(graphe):
     if len(graphe) != int(graphe[0]) + 2:
-
         raise ValueError("Your graph has a wrong page number")
 
 
